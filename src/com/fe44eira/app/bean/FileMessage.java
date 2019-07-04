@@ -4,65 +4,74 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
-
 public class FileMessage implements Serializable {
-    private String cliente;
+    private String username;
+    private String password;
     private File file;
     
-    private ArrayList<String> compartilhamento = new ArrayList();
+    private ArrayList<String> share = new ArrayList();
     
-    public FileMessage() {
+    public FileMessage() {}
+    
+    public FileMessage(String username, String password){
+        this.username = username;
+        this.password = password; 
+        System.out.println("Class FileMessage: Usuário="+username+" Senha="+password);        
     }
-    public FileMessage(String cliente, File file) {
-        this.cliente = cliente;
+    
+    
+    
+    public FileMessage(String username, File file) {
+        this.username = username;
         this.file = file;
     }
     
-     public FileMessage(String cliente, File file, ArrayList<String> share ) {
-        this.cliente = cliente;
+    public FileMessage(String username, File file, ArrayList<String> share ) {
+        this.username = username;
         this.file = file;
-        this.compartilhamento = share;
+        this.share = share;
         
         System.out.println("FileMessage: Recebido");
          
         for(int i=0;i<share.size();i++){
             System.out.println("COMPARTILHADO COM USUARIO: " + share.get(i));
         }
-         
-        
     }
-
-    public FileMessage(String cliente) {
-        this.cliente = cliente;
-    }
-
-    public String getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
-    }
-
+    
+    
     public File getFile() {
         return file;
     }
-
     public void setFile(File file) {
         this.file = file;
     }
     
-    public void addUserShare(String nome){
-        this.compartilhamento.add(nome);       
-    }    
-    
-    public ArrayList<String> getCompartilhamento() {
-        return compartilhamento;
+    public void shareAddUser(String nome){
+        this.share.add(nome);       
     }
 
-    public void setCompartilhamento(ArrayList<String> compartilhamento) {
-        this.compartilhamento = compartilhamento;
+    public ArrayList<String> getUserShare() {
+        return share;
+    }
+    public void setShareUsers(ArrayList<String> share) {
+        this.share = share;
+    }
+    
+    // GETTERS AND SETTERS
+    public String getNomeUsuario() {
+        return username;
+    }
+
+    public void setNomeUsuario(String username) {
+        this.username = username;
+    }
+
+    public String getSenhaUsuario() {
+        return this.password;
+    }
+
+    public void setSenhaUsuario(String password) {
+        this.password = password;
     }
     
     

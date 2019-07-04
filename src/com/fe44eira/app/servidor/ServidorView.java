@@ -168,20 +168,20 @@ public class ServidorView extends javax.swing.JFrame {
             
             try {
                 while((message = (FileMessage) inputStream.readObject()) != null){                    
-                    streamMap.put(message.getCliente(), outputStream);
-                    System.out.println("Online: " + message.getCliente());
+                    streamMap.put(message.getNomeUsuario(), outputStream);
+                    System.out.println("Online: " + message.getNomeUsuario());
                     if(message.getFile() != null){
                         //salvar(message);                        
                         for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
-                            if(!message.getCliente().equals(kv.getKey())){
+                            if(!message.getNomeUsuario().equals(kv.getKey())){
                                 kv.getValue().writeObject(message);
                                 //salvar(message); 
-                                salvarMensage(message, message.getCompartilhamento());
+                                salvarMensage(message, message.getUserShare());
                             }
                         }                        
                     }
                     else{                        
-                        String dirCompleto = dirServidor + message.getCliente();// ESTOU CRIANDO A PASTA DO USUÁRIO ASSIM QUE ELE DIGITA SEU NOME NO CLIENTE                        
+                        String dirCompleto = dirServidor + message.getNomeUsuario();// ESTOU CRIANDO A PASTA DO USUÁRIO ASSIM QUE ELE DIGITA SEU NOME NO CLIENTE                        
                         if(new File(dirCompleto).exists())
                             System.out.println("O diretorio " + dirCompleto + " já existe no servidor!");                        
                         else{
@@ -194,14 +194,14 @@ public class ServidorView extends javax.swing.JFrame {
                     
                 }
             } catch (IOException | ClassNotFoundException ex) {
-                streamMap.remove(message.getCliente());
-                System.out.println("O cliente : -" + message.getCliente() + "- desconectou-se!");
+                streamMap.remove(message.getNomeUsuario());
+                System.out.println("O cliente : -" + message.getNomeUsuario() + "- desconectou-se!");
             }            
         }         
         private void salvarMensage(FileMessage message, ArrayList<String> share) {
             try {
                 
-                share.add(message.getCliente());// Adiciona o cliente no arrayList
+                share.add(message.getNomeUsuario());// Adiciona o cliente no arrayList
                 
                 for(int i=0;i<share.size();i++){
                     //System.out.println(share.get(i));

@@ -41,7 +41,7 @@ public class ClienteView extends javax.swing.JFrame {
         new Thread(new ListnerSocket(socket)).start();
         
         //JOptionPane.showMessageDialog(null, "Seja bem-vindo " + this.nomeCliente , "Nome definido",  WIDTH);               
-        this.outputStream.writeObject(new FileMessage(this.nomeCliente)); // Enviando nome para servidor
+      //  this.outputStream.writeObject(new FileMessage(this.nomeCliente)); // Enviando nome para servidor
         
         setTitle("Aplicação cliente - Usuário: " + this.nomeCliente);
         jLabelNomeCliente.setText("Nome: " + this.nomeCliente);
@@ -79,7 +79,7 @@ public class ClienteView extends javax.swing.JFrame {
             try {               
                 while((message = (FileMessage) inputStream.readObject()) != null){
                     salvar(message); 
-                    JOptionPane.showMessageDialog(null, message.getCliente() + " Enviou um arquivo para você, Nome do arquivo: " + message.getFile().getName(), "Arquivo Recebido......",  WIDTH);                                                                                                                                     
+                    JOptionPane.showMessageDialog(null, message.getNomeUsuario() + " Enviou um arquivo para você, Nome do arquivo: " + message.getFile().getName(), "Arquivo Recebido......",  WIDTH);                                                                                                                                     
                 }                
             } catch (IOException | ClassNotFoundException ex) {Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);}            
         }
@@ -91,22 +91,22 @@ public class ClienteView extends javax.swing.JFrame {
                 FileInputStream fileInputStream = new FileInputStream(message.getFile()); 
                 String dirBase = "c:\\uBox\\Cliente\\";
                 
-                //this.nome = message.getCliente();
+                //this.nome = message.getNomeUsuario();
                 
-                if(new File(dirBase + message.getCliente()).exists()){
-                    System.out.println("Diretorio do cliente já existe no Local: " + dirBase + message.getCliente());
+                if(new File(dirBase + message.getNomeUsuario()).exists()){
+                    System.out.println("Diretorio do cliente já existe no Local: " + dirBase + message.getNomeUsuario());
                 }
                 else{
                     System.out.println("Ops, o diretorio do cliente não existe ainda, vamos tentar criar-lo!");
                     
-                    if(new File(dirBase + message.getCliente()).mkdirs()){
-                        System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirBase + message.getCliente());
+                    if(new File(dirBase + message.getNomeUsuario()).mkdirs()){
+                        System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirBase + message.getNomeUsuario());
                     }
                     else{
-                        System.out.println("Ops, não foi possível criar o diretorio: " + dirBase + message.getCliente());
+                        System.out.println("Ops, não foi possível criar o diretorio: " + dirBase + message.getNomeUsuario());
                     }
                 }               
-                FileOutputStream fileOutputStream = new FileOutputStream(dirBase + message.getCliente() + "\\" + message.getFile().getName()); // Aqui faz acontecer
+                FileOutputStream fileOutputStream = new FileOutputStream(dirBase + message.getNomeUsuario() + "\\" + message.getFile().getName()); // Aqui faz acontecer
                 
                 FileChannel fin = fileInputStream.getChannel();
                 FileChannel fout = fileOutputStream.getChannel();

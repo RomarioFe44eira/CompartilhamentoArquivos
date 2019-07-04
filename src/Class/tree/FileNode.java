@@ -18,6 +18,7 @@ public class FileNode {
             return file.getAbsolutePath();
         } else {
             return name;
+            //return file.getAbsolutePath();
         }
     }
     }

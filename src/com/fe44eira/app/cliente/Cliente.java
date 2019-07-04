@@ -12,16 +12,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 
 public class Cliente {
     private Socket socket;
-    private ObjectOutputStream outputStream;
+    private ObjectOutputStream outputStream;    
+    private String nome;
 
     public Cliente() throws IOException {
         this.socket = new Socket("localhost", 5555);
@@ -31,45 +34,52 @@ public class Cliente {
         menu();
     }
 
+    
     private void menu() throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite seu nome: ");
-        
-        String nome = scanner.nextLine();
-        
-        this.outputStream.writeObject(new FileMessage(nome));
-        
-        int option = 0;
-        
+        System.out.println("Digite seu nome: ");        
+        this.nome = scanner.nextLine();        
+        this.outputStream.writeObject(new FileMessage(nome));        
+        int option = 0;        
         while(option != 1){
             System.out.println("1 - Sair | 2 - Enviar: ");
-            option = scanner.nextInt();
+            option = scanner.nextInt();           
             if(option == 2){
                 send(nome);
             }else if(option == 1){
                 System.exit(0);
-            }
-        }
-        
-        
+            }            
+        }   
     }
-
-    private void send(String nome) throws IOException {        
-        JFileChooser fileChooser = new JFileChooser();        
-        
+   
+    
+    private void send(String nome) throws IOException {         
+        JFileChooser fileChooser = new JFileChooser();       
         int opt = fileChooser.showOpenDialog(null);        
         if(opt == JFileChooser.APPROVE_OPTION){
-            File file = fileChooser.getSelectedFile();
-            this.outputStream.writeObject(new FileMessage(nome, file)); 
+            File file = fileChooser.getSelectedFile();            
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Compartilhar para quantas pessoas: ");            
+            ArrayList<String> share = new ArrayList<String>();
+            int numPessoas = scanner.nextInt();            
+            for (int i = 0; i < numPessoas; i++) {                
+                System.out.println("Digite o nome da " + (i+1) +"º pessoa a compartilhar: ");
+                share.add(scanner.next());    
+            }            
+            this.outputStream.writeObject(new FileMessage(nome, file, share));
+            JOptionPane.showMessageDialog(null, "O Arquivo foi enviado ao diretório do usuário " + nome + " no servidor");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, nome + ", seu arquivo não foi enviado ao servidor!");
         }
     }
 
     private static class ListnerSocket implements Runnable {
-
-        private ObjectInputStream inputStream;        
+        private ObjectInputStream inputStream;  
+        private String nome;        
         
         public ListnerSocket(Socket socket) throws IOException {
-            this.inputStream = new ObjectInputStream(socket.getInputStream());
+            this.inputStream = new ObjectInputStream(socket.getInputStream());            
         }
 
         @Override
@@ -77,17 +87,17 @@ public class Cliente {
             FileMessage message = null;           
             
             try {
+                if ((message = (FileMessage) inputStream.readObject()) != null) {
+                    System.out.println("Message: NULL");
+                }
                 while((message = (FileMessage) inputStream.readObject()) != null){
                     System.out.println("\nVocê recebeu um arquivo de " + message.getCliente()); 
-                    System.out.println("O arquivo é " + message.getFile().getName());
-                    
-                    //imprime(message);
-                    
-                    salvar(message);
-                    
-                    System.out.println("1 - Sair | 2 - Enviar: ");    
-                            
+                    System.out.println("O arquivo é " + message.getFile().getName());                    
+                    //imprime(message);                    
+                    salvar(message);                     
+                    System.out.println("1 - Sair | 2 - Enviar: ");                           
                 }
+                
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -95,9 +105,17 @@ public class Cliente {
             }
             
         }
+        
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
 
         private void imprime(FileMessage message) {
-            try {
+            try {                 
                 FileReader fileReader = new FileReader(message.getFile());
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 String linha;
@@ -113,34 +131,38 @@ public class Cliente {
         }
 
         private void salvar(FileMessage message) {
-            try {
+            System.out.println("Entrou no metodo!!!!!!!!!!!!!!!");
+                 
+            try {               
+                FileInputStream fileInputStream = new FileInputStream(message.getFile()); 
+                String dirLocalCliente = "c:\\uBox\\Cliente\\";
                 
-                Thread.sleep(new Random().nextInt(1000));
-                long time = System.currentTimeMillis();
-                
-                
-                FileInputStream fileInputStream = new FileInputStream(message.getFile());
-                //new File("c:\\uBox\\cliente\\" + message.getCliente()).mkdir();
-                FileOutputStream fileOutputStream = new FileOutputStream("c:\\uBox\\"+ time +"_"+ message.getFile().getName());
+                if(new File(dirLocalCliente + message.getCliente()).exists()){
+                    System.out.println("Eba, o diretorio cliente já existe! Local: " + dirLocalCliente + nome);
+                }
+                else{
+                    System.out.println("Ops, a pasta cliente ainda não existe, vamos tentar cria-la!");
+                    
+                    if(new File(dirLocalCliente + message.getCliente()).mkdirs()){
+                        System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirLocalCliente + nome);
+                    }
+                    else{
+                        System.out.println("Ops, não foi possível criar o diretorio: " + dirLocalCliente + nome);
+                    }
+                }               
+                FileOutputStream fileOutputStream = new FileOutputStream(dirLocalCliente + nome + "\\" + message.getFile().getName()); // Aqui faz acontecer
                 
                 FileChannel fin = fileInputStream.getChannel();
                 FileChannel fout = fileOutputStream.getChannel();
                 
-                long size = fin.size();
-                
-                fin.transferTo(0, size, fout);
-                
-                
-                
+                long size = fin.size();                
+                fin.transferTo(0, size, fout);      
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
     }
     
     public static void main(String[] args) {

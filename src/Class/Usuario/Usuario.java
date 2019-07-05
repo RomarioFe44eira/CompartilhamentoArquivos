@@ -1,5 +1,7 @@
-package Class;
+package Class.Usuario;
 
+import Class.ListnerSocket;
+import Class.ListnerSocket;
 import com.fe44eira.app.bean.FileMessage;
 import com.fe44eira.app.cliente.Cliente;
 import java.io.BufferedReader;
@@ -100,26 +102,24 @@ public class Usuario {
         if (opt == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             this.outputStream.writeObject(new FileMessage(this.username, file));
-            
-            
-
-            JOptionPane.showMessageDialog(null, "O Arquivo foi enviado ao diretório do usuário " + this.username + " no servidor");
-        } else {
+            JOptionPane.showMessageDialog(null, this.username + ", seu arquivo foi enviado para o servidor");
+        }
+        else {
             JOptionPane.showMessageDialog(null, this.username + ", o arquivo não foi enviado ao servidor!");
         }
 
     }
-    public void cli_AddNewUser() throws IOException{
-        Socket socket1 = new Socket("localhost", 5555);
-        this.outputStream = new ObjectOutputStream(socket1.getOutputStream());
-        new Thread(new ListnerSocket(socket1)).start();
-        
-        Usuario user = new Usuario(this.username,this.password);
-        this.outputStream.writeObject(
-            new FileMessage(user.getUsername(), user.getPassword())
-        );        
-        System.out.println("ClassUsuario: Usuário cadastrado..");        
-    }
+//    public void cli_AddNewUser() throws IOException{
+//        Socket socket1 = new Socket("localhost", 5555);
+//        this.outputStream = new ObjectOutputStream(socket1.getOutputStream());
+//        new Thread(new ListnerSocket(socket1)).start();
+//        
+//        Usuario user = new Usuario(this.username,this.password);
+//        this.outputStream.writeObject(
+//            new FileMessage(user.getUsername(), user.getPassword())
+//        );        
+//        System.out.println("ClassUsuario: Usuário cadastrado..");        
+//    }
     
      
     

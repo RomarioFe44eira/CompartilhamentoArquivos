@@ -12,20 +12,15 @@ public class FileMessage implements Serializable {
     private ArrayList<String> share = new ArrayList();
     
     public FileMessage() {}
-    
     public FileMessage(String username, String password){
         this.username = username;
         this.password = password; 
         System.out.println("Class FileMessage: Usuário="+username+" Senha="+password);        
     }
-    
-    
-    
     public FileMessage(String username, File file) {
         this.username = username;
         this.file = file;
     }
-    
     public FileMessage(String username, File file, ArrayList<String> share ) {
         this.username = username;
         this.file = file;
@@ -37,8 +32,7 @@ public class FileMessage implements Serializable {
             System.out.println("COMPARTILHADO COM USUARIO: " + share.get(i));
         }
     }
-    
-    
+
     public File getFile() {
         return file;
     }
@@ -49,7 +43,6 @@ public class FileMessage implements Serializable {
     public void shareAddUser(String nome){
         this.share.add(nome);       
     }
-
     public ArrayList<String> getUserShare() {
         return share;
     }
@@ -61,15 +54,12 @@ public class FileMessage implements Serializable {
     public String getNomeUsuario() {
         return username;
     }
-
     public void setNomeUsuario(String username) {
         this.username = username;
     }
-
     public String getSenhaUsuario() {
         return this.password;
     }
-
     public void setSenhaUsuario(String password) {
         this.password = password;
     }

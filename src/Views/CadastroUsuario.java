@@ -1,10 +1,7 @@
 
 package Views;
 
-import Class.Usuario;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import Class.Usuario.UsuarioCliente;
 import javax.swing.JOptionPane;
 
 public class CadastroUsuario extends javax.swing.JFrame {
@@ -115,26 +112,22 @@ public class CadastroUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        new Login().setVisible(true);  
         dispose();
-        new Login().setVisible(true);          
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // BOTÃO CADASTRAR USUARIO
-        
-        
-        
-        
-        
         if(jpfSenha.getText().equals(jpfConfirmeSenha.getText()) ){            
-            Usuario u = null;
-            try {
-                u = new Usuario(jtfNomeUsuario.getText(), jpfSenha.getText());
-            } catch (IOException ex) {
-                Logger.getLogger(CadastroUsuario.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            JOptionPane.showMessageDialog(rootPane, u.getUsername()+ ", as senhas que você digitou são iguais!");
-            
+            UsuarioCliente uc = new UsuarioCliente();
+            uc.setName(jtfNomeUsuario.getText());
+            uc.setPass(jpfSenha.getPassword().toString());
+            uc.cadastar();
+            JOptionPane.showMessageDialog(rootPane,uc.getName() +" seu cadastro foi realizado com sucesso!");
+            jtfNomeUsuario.setText("");
+            jpfSenha.setText("");
+            jpfConfirmeSenha.setText("");
+            new Login().setVisible(true);
+            dispose();
         }
         else{
             JOptionPane.showMessageDialog(rootPane, "As senhas que você digitou são diferentes!");

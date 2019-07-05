@@ -1,7 +1,7 @@
 package com.fe44eira.app.cliente;
 
 import com.fe44eira.app.bean.FileMessage;
-import Class.Usuario;
+import Class.Usuario.Usuario;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

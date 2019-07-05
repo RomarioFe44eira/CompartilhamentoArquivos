@@ -4,9 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/com/fe44eira/app/servidor/Servidor.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Views/CadastroUsuario.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/com/fe44eira/app/bean/FileMessage.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario/teste.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/ListnerSocket.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario/UsuarioServidor.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario/UsuarioCliente.java</file>
+            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/ListnerSocketServer.java</file>
         </group>
     </open-files>
 </project-private>

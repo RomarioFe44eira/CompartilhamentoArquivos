@@ -8,10 +8,23 @@ public class FileMessage implements Serializable {
     private String username;
     private String password;
     private File file;
+
+    private boolean auth;
+    private String msg = null;
     
     private ArrayList<String> share = new ArrayList();
     
     public FileMessage() {}
+
+    public FileMessage(String msg) {
+        this.msg = msg;
+    }
+
+    public FileMessage(boolean auth, String msg) {
+        this.auth = auth;
+        this.msg = msg;
+    }
+    
     public FileMessage(String username, String password){
         this.username = username;
         this.password = password; 
@@ -62,6 +75,22 @@ public class FileMessage implements Serializable {
     }
     public void setSenhaUsuario(String password) {
         this.password = password;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public boolean isAuth() {
+        return auth;
+    }
+
+    public void setAuth(boolean auth) {
+        this.auth = auth;
     }
     
     

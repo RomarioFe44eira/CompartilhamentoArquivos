@@ -2,11 +2,13 @@ package Class.Usuario;
 
 import Class.interfaces.IUsuario;
 import com.fe44eira.app.bean.FileMessage;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -43,7 +45,6 @@ public class UsuarioServidor implements IUsuario{
         }
         System.out.println("Os dados do usuário foram persistidos no arquivo!");
     }
-
     @Override
     public void remover(){}
     @Override
@@ -88,6 +89,29 @@ public class UsuarioServidor implements IUsuario{
             ex.printStackTrace();
         } 
     }
+
+    
+    public boolean autenticar(String userAuth, String passAuth) throws FileNotFoundException, IOException{
+        FileReader fr = new FileReader(new File("c:\\uBox\\Servidor\\dados.dat"));
+        BufferedReader br = new BufferedReader(fr);
+        String linha = "not empty";
+        do{
+          linha = br.readLine();
+          if(linha == null){
+            br.close();
+            fr.close();
+            return false;
+          }
+          if(linha.equals(userAuth+"#"+passAuth))
+            return true;
+        }while(linha != null);
+        return false;
+        //br.close();
+        //fr.close();
+        //return false;
+    }
+    
+    
     
     @Override
     public void criarDiretorio(){

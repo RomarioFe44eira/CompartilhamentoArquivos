@@ -1,5 +1,6 @@
 package Class;
 
+import Views.ClientePrincipal;
 import com.fe44eira.app.bean.FileMessage;
 import com.fe44eira.app.cliente.Cliente;
 import java.io.BufferedReader;
@@ -14,6 +15,7 @@ import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class ListnerSocket implements Runnable {
 
@@ -30,10 +32,26 @@ public class ListnerSocket implements Runnable {
         System.out.println("RUNNN...");
         try {       
             while ((message = (FileMessage) inputStream.readObject()) != null) {
-                System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario());
-                System.out.println("O arquivo é " + message.getFile().getName());                                  
-                salvar(message);
-                System.out.println("1 - Sair | 2 - Enviar: \n>");
+                
+                if (message.isAuth()== true) {
+                    JOptionPane.showMessageDialog(null, message.getMsg());
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, message.getMsg());
+                }
+                
+                
+                if(!message.getMsg().isEmpty()){
+                    System.out.println("Mensagem Recebeida: " + message.getMsg());
+                    JOptionPane.showMessageDialog(null, message.getMsg());
+                }
+                
+                if(message.getFile() != null){
+                    System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario());
+                    System.out.println("O arquivo é " + message.getFile().getName());                                  
+                    salvar(message);
+                }
+                
             }
 
         } catch (IOException | ClassNotFoundException ex) {

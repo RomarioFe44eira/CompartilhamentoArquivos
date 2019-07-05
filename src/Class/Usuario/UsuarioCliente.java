@@ -46,11 +46,12 @@ public class UsuarioCliente implements IUsuario{
             bw.close();
             fw.close();
             
-            outputStream.writeObject(
-                new FileMessage(this.getName(), auth)
-            ); 
+            FileMessage a;
             
-            System.out.println("Parabéns "+this.getName()+" seu cadastrado foi concluido!");
+            outputStream.writeObject(
+                a = new FileMessage(this.getName(), auth)
+            ); 
+            System.out.println("hey "+this.getName()+", sua autenticação foi transmitida ao servidor!");
             
         } catch (IOException ex) {
             Logger.getLogger(UsuarioCliente.class.getName()).log(Level.SEVERE, null, ex);

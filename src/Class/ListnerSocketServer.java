@@ -3,6 +3,7 @@ package Class;
 import Class.Usuario.UsuarioServidor;
 import com.fe44eira.app.bean.FileMessage;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ListnerSocketServer implements Runnable {
         private ObjectOutputStream outputStream;
@@ -27,16 +30,17 @@ public class ListnerSocketServer implements Runnable {
             FileMessage message = null;            
             try {
                 while((message = (FileMessage) inputStream.readObject()) != null){ 
+                    
+                    
                     UsuarioServidor us = new UsuarioServidor();
                     us.setName(message.getNomeUsuario());
                     username = us.getName();
                     us.setPass(message.getSenhaUsuario());
-                    
                     streamMap.put(us.getName(), outputStream);                    
+
                     System.out.println("Mensagem recebida: " + us.getName());
                     
                     if(message.getFile() != null){
-                        
                         if(message.getFile().getName().equals("auth")){
                             // Realizar autenticação do usuário e dar um retorno.......
                             System.out.println("Arquivo de autenticação recebido...");
@@ -46,17 +50,27 @@ public class ListnerSocketServer implements Runnable {
                             BufferedReader br = new BufferedReader(fr);
                             
                             String linha = br.readLine(); 
-                          
                             String array[] = new String[2];
-                            
                             array = linha.split(";");
 
                             System.out.println("Info[0]: " + array[0]);
                             System.out.println("Info[1]: " + array[1]);
+
+                            if(us.autenticar(array[0], array[1])){
+                                System.out.println("Autenticado!!!!");
+                                //outputStream.writeObject(new FileMessage(username+", você está autenticado ao servidor!"));
+                                outputStream.writeObject(new FileMessage(true, username+", você está autenticado ao servidor!"));
+                            }
+                            else{
+                                System.out.println("Não autenticado!!");
+                                //outputStream.writeObject(new FileMessage(username+", você não conseguiu autenticar-se ao servidor!"));
+                                outputStream.writeObject(new FileMessage(false, username+", você está autenticado ao servidor!"));
+                            }
+                                
                             
                             System.out.printf("%s\n", linha);
 
-                            linha = br.readLine(); // lê da segunda até a última linha
+                          //  linha = br.readLine(); // lê da segunda até a última linha
 
                             fr.close();
                         }
@@ -80,5 +94,5 @@ public class ListnerSocketServer implements Runnable {
                 //Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        } 
+        }       
     }

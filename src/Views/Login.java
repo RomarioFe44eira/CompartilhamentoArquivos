@@ -117,10 +117,13 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         UsuarioCliente uc = new UsuarioCliente();
         uc.setName(jtfNomeUsuario.getText());
-        System.out.println("PassPass:"+jpfSenha.getPassword());
-        System.out.println("PassText:"+jpfSenha.getText());
         uc.setPass(jpfSenha.getText());
+        
+        System.out.println("Login: usuário="+jtfNomeUsuario.getText());
+        System.out.println("Login: senha="+jpfSenha.getText());
+       
         uc.autenticar();
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

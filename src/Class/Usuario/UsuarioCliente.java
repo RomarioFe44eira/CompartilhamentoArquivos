@@ -41,17 +41,16 @@ public class UsuarioCliente implements IUsuario{
             
             FileWriter fw = new FileWriter("c:\\uBox\\Cliente\\temp\\auth");
             BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(this.username +";"+ this.password);
+            bw.write(this.username +"@"+ this.password);
             bw.newLine();
             bw.close();
             fw.close();
             
             FileMessage a;
             
-            outputStream.writeObject(
-                a = new FileMessage(this.getName(), auth)
-            ); 
-            System.out.println("hey "+this.getName()+", sua autenticação foi transmitida ao servidor!");
+            outputStream.writeObject(new FileMessage(this.getName(), auth)); 
+            System.out.println("UsuarioCliente: "+this.getName()+", sua autenticação foi transmitida ao servidor!");
+            
             
         } catch (IOException ex) {
             Logger.getLogger(UsuarioCliente.class.getName()).log(Level.SEVERE, null, ex);

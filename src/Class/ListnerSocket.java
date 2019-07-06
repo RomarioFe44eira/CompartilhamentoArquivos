@@ -1,6 +1,8 @@
 package Class;
 
+import Views.CadastroUsuario;
 import Views.ClientePrincipal;
+import Views.Login;
 import com.fe44eira.app.bean.FileMessage;
 import com.fe44eira.app.cliente.Cliente;
 import java.io.BufferedReader;
@@ -22,6 +24,8 @@ public class ListnerSocket implements Runnable {
     private ObjectInputStream inputStream;
     private String nome;
 
+    
+    
     public ListnerSocket(Socket socket) throws IOException {
         this.inputStream = new ObjectInputStream(socket.getInputStream());        
     }
@@ -29,22 +33,22 @@ public class ListnerSocket implements Runnable {
     @Override
     public void run() {
         FileMessage message = null;
-        System.out.println("RUNNN...");
+        System.out.println("RUNNN... CLIENTE");
         try {       
             while ((message = (FileMessage) inputStream.readObject()) != null) {
                 
                 if (message.isAuth()== true) {
+                    new ClientePrincipal().setVisible(true);
                     JOptionPane.showMessageDialog(null, message.getMsg());
+                    System.out.println("ListnerSocket: Mensagem="+message.getMsg());
+                    System.out.println(ListnerSocket.class.getName()+": auth= "+message.isAuth());
                 }
                 else{
                     JOptionPane.showMessageDialog(null, message.getMsg());
+                    System.out.println("ListnerSocket: Mensagem="+message.getMsg());
+                    new Login().setVisible(true);                     
                 }
                 
-                
-                if(!message.getMsg().isEmpty()){
-                    System.out.println("Mensagem Recebeida: " + message.getMsg());
-                    JOptionPane.showMessageDialog(null, message.getMsg());
-                }
                 
                 if(message.getFile() != null){
                     System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario());
@@ -55,7 +59,7 @@ public class ListnerSocket implements Runnable {
             }
 
         } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Usuário "+message.getNomeUsuario()+" desconectou-se.");
+            System.out.println("Servidor ficou OFFLINE");
             //Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -117,5 +121,8 @@ public class ListnerSocket implements Runnable {
         }
     }
 
+ 
+    
+    
     
 }

@@ -102,7 +102,7 @@ public class UsuarioServidor implements IUsuario{
             fr.close();
             return false;
           }
-          if(linha.equals(userAuth+"#"+passAuth))
+          if(linha.equals(userAuth+"@"+passAuth))
             return true;
         }while(linha != null);
         return false;
@@ -110,8 +110,6 @@ public class UsuarioServidor implements IUsuario{
         //fr.close();
         //return false;
     }
-    
-    
     
     @Override
     public void criarDiretorio(){
@@ -125,7 +123,7 @@ public class UsuarioServidor implements IUsuario{
     public void gravarArquivo(String dir){
         try (FileWriter fw = new FileWriter(dir, true);
             BufferedWriter bw = new BufferedWriter(fw)) {
-            String str = username + "#" + password;
+            String str = username + "@" + password;
             bw.write(str);
             bw.newLine();
             bw.close();

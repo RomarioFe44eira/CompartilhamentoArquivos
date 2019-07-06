@@ -120,7 +120,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
         if(jpfSenha.getText().equals(jpfConfirmeSenha.getText()) ){            
             UsuarioCliente uc = new UsuarioCliente();
             uc.setName(jtfNomeUsuario.getText());
-            uc.setPass(jpfSenha.getPassword().toString());
+            uc.setPass(jpfSenha.getText());
             uc.cadastar();
             JOptionPane.showMessageDialog(rootPane,uc.getName() +" seu cadastro foi realizado com sucesso!");
             jtfNomeUsuario.setText("");

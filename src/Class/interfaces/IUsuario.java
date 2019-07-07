@@ -5,7 +5,7 @@ import java.util.Date;
 public interface IUsuario {
     
     
-    public void cadastar();
+    public void cadastrar();
     public void remover();
     public void editar();
     

@@ -7,24 +7,27 @@ import java.util.ArrayList;
 public class FileMessage implements Serializable {
     private String username;
     private String password;
-    private File file;
 
     private boolean auth;
     private String msg = null;
+    private File file;
     
     private ArrayList<String> share = new ArrayList();
+    private ArrayList<String> listaUsuarios = new ArrayList();
     
     public FileMessage() {}
-
     public FileMessage(String msg) {
         this.msg = msg;
     }
-
     public FileMessage(boolean auth, String msg) {
         this.auth = auth;
         this.msg = msg;
     }
-    
+    public FileMessage(String username, String password, boolean auth) {
+        this.username = username;
+        this.password = password;
+        this.auth = auth;
+    }
     public FileMessage(String username, String password){
         this.username = username;
         this.password = password; 
@@ -34,18 +37,24 @@ public class FileMessage implements Serializable {
         this.username = username;
         this.file = file;
     }
+    
     public FileMessage(String username, File file, ArrayList<String> share ) {
         this.username = username;
         this.file = file;
         this.share = share;
         
-        System.out.println("FileMessage: Recebido");
+        System.out.println("FileMessage: Recebido arquivo compatilhado aos usuarios");
          
         for(int i=0;i<share.size();i++){
             System.out.println("COMPARTILHADO COM USUARIO: " + share.get(i));
         }
     }
-
+     
+    public FileMessage(ArrayList<String> listaUsuarios) {
+         this.listaUsuarios = listaUsuarios;
+     }
+    
+    
     public File getFile() {
         return file;
     }
@@ -92,6 +101,15 @@ public class FileMessage implements Serializable {
     public void setAuth(boolean auth) {
         this.auth = auth;
     }
+
+    public ArrayList<String> getListaUsuarios() {
+        return listaUsuarios;
+    }
+
+    public void setListaUsuarios(ArrayList<String> listaUsuarios) {
+        this.listaUsuarios = listaUsuarios;
+    }
+    
     
     
 }

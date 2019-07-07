@@ -2,14 +2,19 @@
 package Views;
 
 import Class.Usuario.UsuarioCliente;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class CadastroUsuario extends javax.swing.JFrame {
-
+    
     public CadastroUsuario() {
         initComponents();
     }
 
+    
+    // MÉTODOS GERADOS 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -118,10 +123,15 @@ public class CadastroUsuario extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(jpfSenha.getText().equals(jpfConfirmeSenha.getText()) ){            
-            UsuarioCliente uc = new UsuarioCliente();
+            UsuarioCliente uc = null;
+            try {
+                uc = new UsuarioCliente();
+            } catch (IOException ex) {
+                Logger.getLogger(CadastroUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            }
             uc.setName(jtfNomeUsuario.getText());
             uc.setPass(jpfSenha.getText());
-            uc.cadastar();
+            uc.cadastrar();
             JOptionPane.showMessageDialog(rootPane,uc.getName() +" seu cadastro foi realizado com sucesso!");
             jtfNomeUsuario.setText("");
             jpfSenha.setText("");

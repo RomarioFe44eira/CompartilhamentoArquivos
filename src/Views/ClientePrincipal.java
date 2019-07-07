@@ -5,10 +5,22 @@
  */
 package Views;
 
+import Class.Usuario.Usuario;
+import Class.Usuario.UsuarioCliente;
 import Class.tree.CreateChildNodes;
 import Class.tree.FileNode;
+import com.fe44eira.app.bean.FileMessage;
+import java.awt.JobAttributes;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -16,14 +28,24 @@ public class ClientePrincipal extends javax.swing.JFrame {
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     private JTree tree;
+    private UsuarioCliente user;
+    public static ArrayList<String> listaUsers = new ArrayList();
+    public DefaultMutableTreeNode selectedNo = null;
     
     public ClientePrincipal() {
         initComponents();
     }
-
+    public ClientePrincipal(UsuarioCliente u) {
+        initComponents();
+        this.user = u;
+        setTitle("ClientePrincipal - Usuário: " + u.getName());
+        System.out.println("ClientePrincipal: nome=" + this.user.getName()+" pass="+this.user.getPass());
+        
+    }
     public void listarArvore(){
         jScrollPane1.setVisible(false);  
-        File fileRoot = new File("C:/uBox/Cliente/Ana");       
+        //File fileRoot = new File("C://uBox//Cliente//"+this.user.getName()+"//");    
+        File fileRoot = new File("C://uBox//Cliente//"+this.user.getName());       
         root = new DefaultMutableTreeNode(new FileNode(fileRoot));
         treeModel = new DefaultTreeModel(root);         
         jTree1.setModel(treeModel);        
@@ -32,27 +54,40 @@ public class ClientePrincipal extends javax.swing.JFrame {
         add(jTree1);              
         CreateChildNodes ccn = new CreateChildNodes(fileRoot, root);        
         new Thread(ccn).start();
+        jStatusCliente.setText("Conectado ao servidor!");
     }
+    public static ArrayList<String> getListaUsers() {
+        return listaUsers;
+    }
+    public static void setListaUsers(ArrayList<String> listaUsers) {
+        ClientePrincipal.listaUsers = listaUsers;
+    }
+
     
-    
+    //GERADO AUTOMATICAMENTE
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jbSincronizar = new javax.swing.JButton();
+        jbEnviarArquivo = new javax.swing.JButton();
+        jbCompartilhar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jLogSaida = new javax.swing.JEditorPane();
-        jLabel1 = new javax.swing.JLabel();
+        jbAtualizarListaUsuarios = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
+        jStatusCliente = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -62,23 +97,33 @@ public class ClientePrincipal extends javax.swing.JFrame {
         jScrollPane3.setViewportBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Usuário01", "Usuário02", "Usuário03", "Usuário04", "Usuário05", "Usuário06" };
+            String[] strings = { "Carregando Usuário...." };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
         jList1.setSelectionBackground(new java.awt.Color(255, 0, 102));
         jScrollPane3.setViewportView(jList1);
 
-        jButton2.setText("Sincronizar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jbSincronizar.setText("Sincronizar");
+        jbSincronizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jbSincronizarActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Enviar Arquivo");
+        jbEnviarArquivo.setText("Enviar Arquivo");
+        jbEnviarArquivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEnviarArquivoActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Compartilhar");
+        jbCompartilhar.setText("Compartilhar");
+        jbCompartilhar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbCompartilharActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 0, 51));
 
@@ -91,6 +136,11 @@ public class ClientePrincipal extends javax.swing.JFrame {
         jTree1.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 jTree1ComponentShown(evt);
+            }
+        });
+        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                jTree1ValueChanged(evt);
             }
         });
         jScrollPane1.setViewportView(jTree1);
@@ -108,71 +158,172 @@ public class ClientePrincipal extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jScrollPane2.setViewportView(jLogSaida);
+        jbAtualizarListaUsuarios.setText("Atualizar Lista Usuário");
+        jbAtualizarListaUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAtualizarListaUsuariosActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setText("Log de saída");
+        jToolBar1.setRollover(true);
+
+        jStatusCliente.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jStatusCliente.setText("Aguardando resposta do servidor....");
+        jToolBar1.add(jStatusCliente);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 834, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(jbAtualizarListaUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jbEnviarArquivo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                        .addComponent(jbCompartilhar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbSincronizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jbCompartilhar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jbSincronizar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(jbEnviarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbAtualizarListaUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // MÉTODOS COM EVENTOS DO FORM
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         jPanel1.setVisible(false);
+        jStatusCliente.setText("Conectou-se ao servidor!");
         this.listarArvore();
-        //this.listarArvore();
-        //this.listarArvore();
+        try {
+            this.user.obterListaUsuarios();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_formWindowOpened
-
     private void jTree1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTree1ComponentShown
 
     }//GEN-LAST:event_jTree1ComponentShown
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jbSincronizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSincronizarActionPerformed
        
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jbSincronizarActionPerformed
+    private void jbEnviarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEnviarArquivoActionPerformed
+        user.enviarArquivo();
+        this.listarArvore();
+        this.atualizarListaUsuario();
+        jStatusCliente.setText("Arquivo foi enviado!");
+    }//GEN-LAST:event_jbEnviarArquivoActionPerformed
+    private void jbAtualizarListaUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarListaUsuariosActionPerformed
+        this.atualizarListaUsuario();
+    }//GEN-LAST:event_jbAtualizarListaUsuariosActionPerformed
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        //atualizarListaUsuario();
+        //listarArvore();
+        
+    }//GEN-LAST:event_formMouseEntered
+    private void jbCompartilharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCompartilharActionPerformed
+        Object sel =null;
+        ArrayList<String> compartilharComUsuarios = new ArrayList<>();
+        int[] selectedIx = this.jList1.getSelectedIndices();      
+
+        for (int i = 0; i < selectedIx.length; i++) {
+            sel = jList1.getModel().getElementAt(selectedIx[i]);
+            //System.out.println("Sel: "+sel);
+            compartilharComUsuarios.add(sel.toString());
+        }
+
+        for (int i = 0; i < compartilharComUsuarios.size(); i++) {
+            System.out.println("User: "+compartilharComUsuarios.get(i));
+        }
+        
+        System.out.println("FileSelected: "+this.selectedNo);
+        
+        if(user.getName() != null){
+            if(this.selectedNo == null){
+                JOptionPane.showMessageDialog(rootPane, "Selecione um arquivo na Árvore de Arquivos!");
+            }
+            else{
+                
+                if(this.selectedNo.isRoot()){
+                    JOptionPane.showMessageDialog(rootPane, "Não pode compartilhar o nó Raiz");
+                }
+                else{
+                    if(!compartilharComUsuarios.isEmpty()){
+                        File ShareFile = new File("C:\\uBox\\Cliente\\"+user.getName()+"\\"+this.selectedNo);
+                        FileMessage fmCompartilhar = new FileMessage(user.getName(),ShareFile, compartilharComUsuarios);
+
+                        try {
+                            user.compartilharArquivo(fmCompartilhar);
+                        } catch (IOException ex) {
+                            Logger.getLogger(ClientePrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                        } 
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(rootPane, "Selecione ao menos um usuário para compartilhar!");
+                    }
+                }
+            }
+        }
+        else{
+            System.out.println("&&&&&&&&&&&& USUARIO NULO - NÃO HÁ COMO REALIZAR COMPARTILHAMENTO &&&&&&&&&&&&&&&&&");
+        }
+        
+        
+        
+        
+    }//GEN-LAST:event_jbCompartilharActionPerformed
+    private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
+        this.selectedNo =  (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent(); 
+    }//GEN-LAST:event_jTree1ValueChanged
+
     
+    
+    public void atualizarListaUsuario(){
+        System.out.println("********************** ATUALIZAR LISTA DE USUARIO*******************************");
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        if(listaUsers == null || listaUsers.isEmpty()){
+            System.out.println("############### LISTA DE USUÁRIOS VAZIA OU NULA #######################");
+            System.out.println("Lista vazia ou nula! LIST: "+listaUsers);
+        }
+        for (String percorrer : listaUsers) {
+            if(!this.user.getName().equals(percorrer)){
+                listModel.addElement(percorrer);
+                System.out.println("percorrer: "+percorrer);
+            }
+        }
+        
+        jList1.setModel(listModel);
+        jStatusCliente.setText("Lista de Usuários atualizada!");
+        System.out.println("********************** LISTA DE USUARIO ATUALIZADA *******************************");
+    }
+    
+    //  MAIN APP
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -204,16 +355,16 @@ public class ClientePrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
-    private javax.swing.JEditorPane jLogSaida;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel jStatusCliente;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTree jTree1;
+    private javax.swing.JButton jbAtualizarListaUsuarios;
+    private javax.swing.JButton jbCompartilhar;
+    private javax.swing.JButton jbEnviarArquivo;
+    private javax.swing.JButton jbSincronizar;
     // End of variables declaration//GEN-END:variables
 }

@@ -14,14 +14,17 @@ public class teste {
         
         //uc.enviarArquivo();
         
-        UsuarioServidor us = new UsuarioServidor();
-        us.setName("Bruna");
-        us.setPass("123");
+//        UsuarioServidor us = new UsuarioServidor();
+//        us.setName("Bruna");
+//        us.setPass("123");
+//        
+//        us.cadastar();
+//        us.autenticar(us.getName(), us.getPass());
         
-        us.cadastar();
-        us.autenticar(us.getName(), us.getPass());
         
-                
+        
+        
+        
         
     }
 }

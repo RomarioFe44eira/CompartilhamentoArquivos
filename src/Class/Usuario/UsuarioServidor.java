@@ -1,6 +1,7 @@
 package Class.Usuario;
 
 import Class.interfaces.IUsuario;
+import static Views.ClientePrincipal.listaUsers;
 import com.fe44eira.app.bean.FileMessage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,9 +28,9 @@ public class UsuarioServidor implements IUsuario{
     }
 
     @Override
-    public void cadastar(){
+    public void cadastrar(){
         this.criarDiretorio();
-        
+        gravarArquivoListaUsuario(this.username);
         String dir = "C:\\uBox\\Servidor\\dados.dat";
 
         if(new File(dir).exists()){            
@@ -44,6 +45,7 @@ public class UsuarioServidor implements IUsuario{
             }
         }
         System.out.println("Os dados do usuário foram persistidos no arquivo!");
+        
     }
     @Override
     public void remover(){}
@@ -51,7 +53,7 @@ public class UsuarioServidor implements IUsuario{
     public void editar(){}
     
     public void salvarMensagem(FileMessage message){
-      String uriServer = "c:\\uBox\\Servidor\\"; 
+        String uriServer = "c:\\uBox\\Servidor\\"; 
         try {                
             FileInputStream fileInputStream = new FileInputStream(message.getFile());
             new File(uriServer + message.getNomeUsuario() +"\\.properties").createNewFile();
@@ -69,6 +71,8 @@ public class UsuarioServidor implements IUsuario{
             ex.printStackTrace();
         }   
     }
+    
+    
     public void salvarMensagem(FileMessage message, ArrayList<String> share){
         String dirBaseServer = "c:\\uBox\\Servidor\\"; 
         try {                
@@ -120,6 +124,7 @@ public class UsuarioServidor implements IUsuario{
                 System.out.println("Erro ao criar o diretório pessoal do usuário " + this.username);
         }
     }; 
+    
     public void gravarArquivo(String dir){
         try (FileWriter fw = new FileWriter(dir, true);
             BufferedWriter bw = new BufferedWriter(fw)) {
@@ -131,6 +136,59 @@ public class UsuarioServidor implements IUsuario{
         } catch (IOException ex) {
             Logger.getLogger(UsuarioServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void gravarArquivoListaUsuario(String user){
+        try (FileWriter fw = new FileWriter("C:\\uBox\\Servidor\\listaUsuarios.dat", true);
+            BufferedWriter bw = new BufferedWriter(fw)) {
+            String str = user;
+            bw.write(str);
+            bw.newLine();
+            bw.close();
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(UsuarioServidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void gravarArquivoCompartilhado(FileMessage fmShare){
+        String uriServer = "c:\\uBox\\Servidor\\"; 
+       
+        try {                
+            System.out.println("Acessou método para compartilhamento em CLASS: USUARIOSERVIDOR");
+            FileInputStream fileInputStream = new FileInputStream(fmShare.getFile());
+           
+            // CRIA O ARQUIVO LINK PARA CADA USUÁRIO EM QUE O ARQUIVO FOI COMPARTILHADO
+            for(String percorrer : fmShare.getUserShare()) {
+                new File(uriServer + percorrer +"\\"+fmShare.getFile().getName()+".link").createNewFile();
+                
+                 try (FileWriter fw = new FileWriter(uriServer + percorrer +"\\"+fmShare.getFile().getName()+".link", true);
+                    BufferedWriter bw = new BufferedWriter(fw)) {
+                    String str = uriServer + fmShare.getNomeUsuario() +"\\"+fmShare.getFile().getName();
+                    bw.write(str);
+                    bw.newLine();
+                    bw.close();
+                    fw.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(UsuarioServidor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            
+            
+            FileOutputStream fileOutputStream = new FileOutputStream( uriServer + fmShare.getNomeUsuario() + "\\" + fmShare.getFile().getName());                
+            
+            FileChannel fin = fileInputStream.getChannel();
+            FileChannel fout = fileOutputStream.getChannel();                
+            long size = fin.size();                
+            fin.transferTo(0, size, fout);
+        
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }   
+        
     }
 
     // GETTERS AND SETTERS

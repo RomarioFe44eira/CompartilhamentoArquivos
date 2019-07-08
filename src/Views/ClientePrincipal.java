@@ -5,12 +5,10 @@
  */
 package Views;
 
-import Class.Usuario.Usuario;
 import Class.Usuario.UsuarioCliente;
 import Class.tree.CreateChildNodes;
 import Class.tree.FileNode;
 import com.fe44eira.app.bean.FileMessage;
-import java.awt.JobAttributes;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +17,6 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -248,6 +244,7 @@ public class ClientePrincipal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formMouseEntered
     private void jbCompartilharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCompartilharActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Compartilhamento efetuado!");
         Object sel =null;
         ArrayList<String> compartilharComUsuarios = new ArrayList<>();
         int[] selectedIx = this.jList1.getSelectedIndices();      
@@ -309,18 +306,16 @@ public class ClientePrincipal extends javax.swing.JFrame {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         if(listaUsers == null || listaUsers.isEmpty()){
             System.out.println("############### LISTA DE USUÁRIOS VAZIA OU NULA #######################");
-            System.out.println("Lista vazia ou nula! LIST: "+listaUsers);
         }
-        for (String percorrer : listaUsers) {
-            if(!this.user.getName().equals(percorrer)){
-                listModel.addElement(percorrer);
-                System.out.println("percorrer: "+percorrer);
+        else{
+            for (String percorrer : listaUsers) {
+                if(!this.user.getName().equals(percorrer) && this.user.getName() != null && percorrer != null){
+                    listModel.addElement(percorrer);
+                    System.out.println("percorrer: "+percorrer);
+                    jList1.setModel(listModel);
+                }
             }
         }
-        
-        jList1.setModel(listModel);
-        jStatusCliente.setText("Lista de Usuários atualizada!");
-        System.out.println("********************** LISTA DE USUARIO ATUALIZADA *******************************");
     }
     
     //  MAIN APP

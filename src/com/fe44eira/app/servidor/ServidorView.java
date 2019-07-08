@@ -1,17 +1,12 @@
 package com.fe44eira.app.servidor;
 
-import com.fe44eira.app.bean.FileMessage;
+import Class.ListnerSocketServer;
+import Views.ClientePrincipal;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -26,10 +21,9 @@ public class ServidorView extends javax.swing.JFrame {
     private String dirServidor = "c:\\uBox\\Servidor\\";
     private boolean status;
 
- 
-    
     public ServidorView() {
         initComponents();
+        
         
         try {
            // this.port = Integer.parseInt(JOptionPane.showInputDialog("Defina uma porta para o Servidor?"));   
@@ -38,10 +32,13 @@ public class ServidorView extends javax.swing.JFrame {
             
             //JOptionPane.showMessageDialog(null, "Servidor está ativo!");            
             
-            System.out.println("Servidor ON!");          
+            System.out.println("Servidor ON!");  
+            
+           setStatus(true);
             
             if(new File(dirServidor).exists()){
                 System.out.println("O diretorio ja existe!");
+                new ServidorView().setVisible(true);
             }
             else{
                 System.out.println("O diretorio ainda não existe, tentaremos criar-lo!");
@@ -55,7 +52,7 @@ public class ServidorView extends javax.swing.JFrame {
             
             while(true){
                 socket = serverSocket.accept();
-                new Thread(new ServidorView.ListnerSocket(socket)).start();                
+                new Thread(new ListnerSocketServer(socket)).start();                
             }
         } catch (IOException ex) {
             Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
@@ -154,73 +151,7 @@ public class ServidorView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public class ListnerSocket implements Runnable {
-        private ObjectOutputStream outputStream;
-        private ObjectInputStream inputStream;        
-        
-        public ListnerSocket(Socket socket) throws IOException {
-            this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-            this.inputStream = new ObjectInputStream(socket.getInputStream());
-        }
-        
-        public void run() {
-            FileMessage message = null;
-            
-            try {
-                while((message = (FileMessage) inputStream.readObject()) != null){                    
-                    streamMap.put(message.getNomeUsuario(), outputStream);
-                    System.out.println("Online: " + message.getNomeUsuario());
-                    if(message.getFile() != null){
-                        //salvar(message);                        
-                        for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
-                            if(!message.getNomeUsuario().equals(kv.getKey())){
-                                kv.getValue().writeObject(message);
-                                //salvar(message); 
-                                salvarMensage(message, message.getUserShare());
-                            }
-                        }                        
-                    }
-                    else{                        
-                        String dirCompleto = dirServidor + message.getNomeUsuario();// ESTOU CRIANDO A PASTA DO USUÁRIO ASSIM QUE ELE DIGITA SEU NOME NO CLIENTE                        
-                        if(new File(dirCompleto).exists())
-                            System.out.println("O diretorio " + dirCompleto + " já existe no servidor!");                        
-                        else{
-                            if(new File(dirCompleto).mkdirs())
-                                System.out.println("Diretório "+ dirCompleto +" foi criado com sucesso");                            
-                            else
-                                System.out.println("Ocorreu um erro ao criar o diretório "+ dirCompleto +" !");
-                        }                        
-                    }
-                    
-                }
-            } catch (IOException | ClassNotFoundException ex) {
-                streamMap.remove(message.getNomeUsuario());
-                System.out.println("O cliente : -" + message.getNomeUsuario() + "- desconectou-se!");
-            }            
-        }         
-        private void salvarMensage(FileMessage message, ArrayList<String> share) {
-            try {
-                
-                share.add(message.getNomeUsuario());// Adiciona o cliente no arrayList
-                
-                for(int i=0;i<share.size();i++){
-                    //System.out.println(share.get(i));
-                    FileInputStream fileInputStream = new FileInputStream(message.getFile());
-                    new File(dirServidor + share.get(i)).mkdir();
-                    new File(dirServidor + share.get(i) +"\\.properties").createNewFile();
-                    FileOutputStream fileOutputStream = new FileOutputStream( dirServidor + share.get(i) + "\\" + message.getFile().getName());                
-                    FileChannel fin = fileInputStream.getChannel();
-                    FileChannel fout = fileOutputStream.getChannel();                
-                    long size = fin.size();                
-                    fin.transferTo(0, size, fout);
-                }               
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } 
-        }        
-    }
+   
         
     public boolean isStatus() {
         return status;
@@ -258,10 +189,8 @@ public class ServidorView extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ServidorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ServidorView().setVisible(true);;
-            }
+       java.awt.EventQueue.invokeLater(() -> {
+           new ServidorView().setVisible(true);
         });
     }
 

@@ -51,7 +51,7 @@ public class FileMessage implements Serializable {
     }
      
     public FileMessage(ArrayList<String> listaUsuarios) {
-         this.listaUsuarios = listaUsuarios;
+        this.listaUsuarios = listaUsuarios;
      }
     
     

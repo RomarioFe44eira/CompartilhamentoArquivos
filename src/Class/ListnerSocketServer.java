@@ -57,13 +57,14 @@ public class ListnerSocketServer implements Runnable {
                             ArrayList<String> listaUsuarios = new ArrayList();
 
                             linha = br.readLine();
+                            
                             while(linha != null){
-                                if(linha != null){
-                                    listaUsuarios.add(linha); 
-                                    System.out.println("UserList: "+linha);
-                                }
+                                listaUsuarios.add(linha); 
+                                System.out.println("########### USUARIO: "+linha);
                                 linha = br.readLine();
                             }
+                            
+                            
                             FileMessage fm = new FileMessage(listaUsuarios);
                             fm.setAuth(true);
                             fm.setMsg("ReturnListaUsuarios");
@@ -98,6 +99,7 @@ public class ListnerSocketServer implements Runnable {
                     // TRABALHANDO COM ARQUIVO 
                     if(message.getFile() != null){
                         if(message.getFile().getName().equals("auth")){
+                            message.setMsg("auth");
                             // Realizar autenticação do usuário e dar um retorno.......
                             System.out.println("ListnerSocketServer: Arquivo de autenticação recebido...");
                             us.gravarArquivo(username);
@@ -122,23 +124,24 @@ public class ListnerSocketServer implements Runnable {
                             else{
                                 System.out.println("ListnerSocketServer: Usuário não autenticado.");
                                 FileMessage fms = new FileMessage(false, username+", você não conseguiu autenticar-se ao servidor!");
-                                fms.setMsg(null);
+                                fms.setMsg("NoAuth");
                                 outputStream.writeObject(fms);
                             }
                             fr.close();
                         }
                         
                         if(message.getMsg().equals("FileShare")){
-                            System.out.println("$$$$$$$$$$$$$$  COMPARTIHAMENTO DE ARQUIVOS EXECUTADO $$$$$$$$$$$$$$$$$");
-                            us.gravarArquivoCompartilhado(message);
+                            if(message.getNomeUsuario() != null){
+                               us.gravarArquivoCompartilhado(message); 
+                            }
                         }
                         
                         
-//                        for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
-//                            if(!us.getName().equals(kv.getKey())){// VERIFICA SE USUARIO É IGUAL AO USUÁRIO NO ARRAY
-//                                kv.getValue().writeObject(message);// ENVIANDO MESSAGEM AOS USUARIOS 
-//                            }
-//                        }   
+                        for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
+                            if(!us.getName().equals(kv.getKey()) && us.getName() != null){// VERIFICA SE USUARIO É IGUAL AO USUÁRIO NO ARRAY
+                                kv.getValue().writeObject(message);// ENVIANDO MESSAGEM AOS USUARIOS 
+                           }
+                        }   
                         us.salvarMensagem(message);
                     }
                     else{

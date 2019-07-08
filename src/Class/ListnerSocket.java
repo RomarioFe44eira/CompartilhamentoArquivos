@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 
 public class ListnerSocket implements Runnable {
     private ObjectInputStream inputStream;
-    private String nome;
+    private static String nome;
 
     public ListnerSocket(Socket socket) throws IOException {
         this.inputStream = new ObjectInputStream(socket.getInputStream());        
@@ -52,7 +52,7 @@ public class ListnerSocket implements Runnable {
                             new UsuarioCliente(message.getNomeUsuario(), message.getSenhaUsuario(), message.isAuth())
                         ).setVisible(true);
                         JOptionPane.showMessageDialog(null, message.getNomeUsuario()+" seu acesso foi permitido!", "Autenticação aceita", JOptionPane.INFORMATION_MESSAGE);
-                        System.out.println(ListnerSocket.class.getName()+": auth= "+message.isAuth());
+                        //System.out.println(ListnerSocket.class.getName()+": auth= "+message.isAuth());
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Autenticação falhou, tente novamente!", "Autenticação Recusada", JOptionPane.ERROR_MESSAGE);
@@ -106,21 +106,21 @@ public class ListnerSocket implements Runnable {
             FileInputStream fileInputStream = new FileInputStream(message.getFile());
             String dirLocalCliente = "c:\\uBox\\Cliente\\";
 
-            if (new File(dirLocalCliente + message.getNomeUsuario()).exists()) {
-                System.out.println("Eba, o diretorio cliente já existe! Local: " + dirLocalCliente + message.getNomeUsuario());
+            if (new File(dirLocalCliente + nome).exists()) {
+                System.out.println("Eba, o diretorio cliente já existe! Local: " + dirLocalCliente + nome);
             } else {
                 System.out.println("Ops, a pasta cliente ainda não existe, vamos tentar cria-la!");
 
-                if (new File(dirLocalCliente + message.getNomeUsuario()).mkdirs()) {
-                    System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirLocalCliente + message.getNomeUsuario());
+                if (new File(dirLocalCliente + nome).mkdirs()) {
+                    System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirLocalCliente + nome);
                 } else {
-                    System.out.println("Ops, não foi possível criar o diretorio: " + dirLocalCliente + message.getNomeUsuario());
+                    System.out.println("Ops, não foi possível criar o diretorio: " + dirLocalCliente + nome);
                 }
             }
            
             
             //FileOutputStream fileOutputStream = new FileOutputStream(dirLocalCliente + nome + "\\" + message.getFile().getName()); // Aqui faz acontecer
-            FileOutputStream fileOutputStream = new FileOutputStream(dirLocalCliente + message.getNomeUsuario() + "\\" + message.getFile().getName()); // Aqui faz acontecer
+            FileOutputStream fileOutputStream = new FileOutputStream(dirLocalCliente + nome + "\\" + message.getFile().getName()); // Aqui faz acontecer
 
             FileChannel fin = fileInputStream.getChannel();
             FileChannel fout = fileOutputStream.getChannel();

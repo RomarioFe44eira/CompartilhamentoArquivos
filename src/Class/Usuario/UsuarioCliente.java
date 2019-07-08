@@ -159,7 +159,6 @@ public class UsuarioCliente implements IUsuario{
     
     
     public void compartilharArquivo(FileMessage fmShare) throws IOException{
-        System.out.println("Botão clicado de compartilhameto");
         fmShare.setMsg("FileShare");
         outputStream.writeObject(fmShare);
     };

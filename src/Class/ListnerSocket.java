@@ -62,6 +62,7 @@ public class ListnerSocket implements Runnable {
                 
                 
                 if(message.getFile() != null){
+                    JOptionPane.showMessageDialog(null, "Você recebeu uma nova mensagem!");
                     System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario());
                     System.out.println("O arquivo é " + message.getFile().getName());                                  
                     salvar(message);

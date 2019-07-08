@@ -2,16 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/com/fe44eira/app/servidor/Servidor.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Views/ClientePrincipal.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Views/Login.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/ListnerSocket.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Views/CadastroUsuario.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario/UsuarioServidor.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/Usuario/UsuarioCliente.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/Class/ListnerSocketServer.java</file>
-            <file>file:/C:/Users/Administrador/Documents/NetBeansProjects/SocketArquivos/src/com/fe44eira/app/bean/FileMessage.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -41,7 +41,11 @@ public class ListnerSocketServer implements Runnable {
                     streamMap.put(us.getName(), outputStream); // ASSOCIANDO NOME DO USUÁRIO COM OUTPUTSTREAM
                     System.out.println("ListnerSocketServer: Mensagem recebida - Usuário: " + us.getName());
                     
-                    
+//                    for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
+//                          if(!us.getName().equals(kv.getKey()) && us.getName() != null){// VERIFICA SE USUARIO É IGUAL AO USUÁRIO NO ARRAY
+//                              kv.getValue().writeObject(message);// ENVIANDO MESSAGEM AOS USUARIOS 
+//                         }
+//                    } 
                     
                     
                     if(message.getMsg() != null){
@@ -63,7 +67,6 @@ public class ListnerSocketServer implements Runnable {
                                 System.out.println("########### USUARIO: "+linha);
                                 linha = br.readLine();
                             }
-                            
                             
                             FileMessage fm = new FileMessage(listaUsuarios);
                             fm.setAuth(true);
@@ -90,10 +93,32 @@ public class ListnerSocketServer implements Runnable {
                             }
                         }
                         
-                       
+                        if(message.getMsg().equals("DownFiles")){
+                            File file = new File("c:\\uBox\\Servidor\\"+us.getName());
+                            File afile[] = file.listFiles();
+                            int i = 0;
+                            for (int j = afile.length; i < j; i++) {
+                                File arquivos = afile[i];
+                                
+                                FileMessage fmDown = new FileMessage(this.username, afile[i]);
+                                fmDown.setMsg("ReceiverFiles");
+                                        
+                                for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
+                                    if(us.getName().equals(kv.getKey())){
+                                        kv.getValue().writeObject(fmDown);
+                                   }
+                                } 
+                                
+                                
+                                //System.out.println(arquivos.getName());
+                               // outputStream.writeObject();
+                            }
+                            
+                            
+                        }
+                        
                         
                     }
-                    
                     
                     
                     // TRABALHANDO COM ARQUIVO 
@@ -137,12 +162,8 @@ public class ListnerSocketServer implements Runnable {
                         }
                         
                         
-                        for(Map.Entry<String, ObjectOutputStream> kv : streamMap.entrySet()){
-                            if(!us.getName().equals(kv.getKey()) && us.getName() != null){// VERIFICA SE USUARIO É IGUAL AO USUÁRIO NO ARRAY
-                                kv.getValue().writeObject(message);// ENVIANDO MESSAGEM AOS USUARIOS 
-                           }
-                        }   
-                        us.salvarMensagem(message);
+                        
+//                        us.salvarMensagem(message);
                     }
                     else{
                         //us.cadastrar();

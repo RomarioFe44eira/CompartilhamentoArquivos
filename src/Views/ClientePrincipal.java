@@ -5,6 +5,7 @@
  */
 package Views;
 
+import Class.ListnerSocket;
 import Class.Usuario.UsuarioCliente;
 import Class.tree.CreateChildNodes;
 import Class.tree.FileNode;
@@ -34,6 +35,7 @@ public class ClientePrincipal extends javax.swing.JFrame {
     public ClientePrincipal(UsuarioCliente u) {
         initComponents();
         this.user = u;
+        ListnerSocket.nome = this.user.getName();
         setTitle("ClientePrincipal - Usuário: " + u.getName());
         System.out.println("ClientePrincipal: nome=" + this.user.getName()+" pass="+this.user.getPass());
         
@@ -302,7 +304,6 @@ public class ClientePrincipal extends javax.swing.JFrame {
     
     
     public void atualizarListaUsuario(){
-        System.out.println("********************** ATUALIZAR LISTA DE USUARIO*******************************");
         DefaultListModel<String> listModel = new DefaultListModel<>();
         if(listaUsers == null || listaUsers.isEmpty()){
             System.out.println("############### LISTA DE USUÁRIOS VAZIA OU NULA #######################");

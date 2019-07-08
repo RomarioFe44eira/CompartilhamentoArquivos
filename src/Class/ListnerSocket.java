@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 
 public class ListnerSocket implements Runnable {
     private ObjectInputStream inputStream;
-    private static String nome;
+    public static String nome;
 
     public ListnerSocket(Socket socket) throws IOException {
         this.inputStream = new ObjectInputStream(socket.getInputStream());        
@@ -62,9 +62,17 @@ public class ListnerSocket implements Runnable {
                 
                 
                 if(message.getFile() != null){
+                    
+                    if(message.getMsg().equals("DownFiles")){
+                        gravarArquivos(message.getNomeUsuario(), message);
+                    }
+                    
+                    
+                    
                     JOptionPane.showMessageDialog(null, "Você recebeu uma nova mensagem!");
-                    System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario());
-                    System.out.println("O arquivo é " + message.getFile().getName());                                  
+                    System.out.println("\nVocê recebeu um arquivo de " + message.getNomeUsuario().toUpperCase());
+                    System.out.println("O arquivo é " + message.getFile().getName().toUpperCase());                                  
+                    
                     salvar(message);
                 }
                 
@@ -134,4 +142,34 @@ public class ListnerSocket implements Runnable {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
+    public void gravarArquivos(String nomeUsuario, FileMessage message) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(message.getFile());
+            String dirLocalCliente = "c:\\uBox\\Cliente\\";
+            if (new File(dirLocalCliente + nomeUsuario).exists()) {
+                System.out.println("Diretorio cliente já existe.");
+            } else {
+                System.out.println("Ops, a pasta cliente ainda não existe, vamos tentar cria-la!");
+                if (new File(dirLocalCliente + nomeUsuario).mkdirs()) {
+                    System.out.println("Eba, o diretorio cliente foi criado, Local: " + dirLocalCliente + nomeUsuario);
+                } else {
+                    System.out.println("Ops, não foi possível criar o diretorio: " + dirLocalCliente + nomeUsuario);
+                }
+            }
+            FileOutputStream fileOutputStream = new FileOutputStream(dirLocalCliente + nomeUsuario + "\\" + message.getFile().getName()); // Aqui faz acontecer
+            FileChannel fin = fileInputStream.getChannel();
+            FileChannel fout = fileOutputStream.getChannel();
+            long size = fin.size();
+            fin.transferTo(0, size, fout);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
 }
